@@ -116,11 +116,6 @@ return [
             ],
         ],
         [
-            'label' => 'Settings',
-            'route' => 'settings',
-            'icon' => 'fas fa-cog',
-        ],
-        [
             'label' => 'Document Types',
             'icon' => 'fas fa-file-alt',
             'permission' => 'view document types',
@@ -137,6 +132,47 @@ return [
                 ],
             ],
         ],
-        // Add more menu items as needed
+        [
+            'label' => 'Working Hours',
+            'icon' => 'fas fa-clock',
+            'submenu' => [
+                [
+                    'label' => 'My Working Hours',
+                    'route' => 'working-hours.index',
+                    'permission' => 'view own working hours',
+                ],
+                [
+                    'label' => 'Add Working Hours',
+                    'route' => 'working-hours.create',
+                    'permission' => 'create working hours',
+                ],
+                [
+                    'label' => 'Monthly Summary',
+                    'route' => 'working-hours.monthly',
+                    'permission' => 'view own working hours',
+                ],
+            ],
+        ],
+        [
+            'label' => 'Company Law',
+            'icon' => 'fas fa-balance-scale',
+            'submenu' => [
+                [
+                    'label' => 'View Company Law',
+                    'route' => 'company-laws.index',
+                    'permission' => 'view company law',
+                ],
+                [
+                    'label' => 'Edit Company Law',
+                    'route' => 'company-laws.edit',
+                    'permission' => 'edit company law',
+                ],
+            ],
+        ],
+        [
+            'label' => 'Settings',
+            'route' => 'settings',
+            'icon' => 'fas fa-cog',
+        ],
     ],
 ]; 

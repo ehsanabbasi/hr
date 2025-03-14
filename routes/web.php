@@ -13,6 +13,8 @@ use App\Http\Controllers\FacilityNeedController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\UserDocumentController;
+use App\Http\Controllers\WorkingHourController;
+use App\Http\Controllers\CompanyLawController;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +93,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{document}/download', [UserDocumentController::class, 'download'])->name('download');
         Route::delete('/{document}', [UserDocumentController::class, 'destroy'])->name('destroy');
     });
+
+    // Working Hours
+    Route::get('/working-hours', [WorkingHourController::class, 'index'])->name('working-hours.index');
+    Route::get('/working-hours/create', [WorkingHourController::class, 'create'])->name('working-hours.create');
+    Route::post('/working-hours', [WorkingHourController::class, 'store'])->name('working-hours.store');
+    Route::get('/working-hours/{workingHour}/edit', [WorkingHourController::class, 'edit'])->name('working-hours.edit');
+    Route::put('/working-hours/{workingHour}', [WorkingHourController::class, 'update'])->name('working-hours.update');
+    Route::get('/working-hours/monthly', [WorkingHourController::class, 'showMonthly'])->name('working-hours.monthly');
+
+    // Company Law Settings (admin only)
+    Route::get('/company-laws', [CompanyLawController::class, 'index'])->name('company-laws.index');
+    Route::get('/company-laws/edit', [CompanyLawController::class, 'edit'])->name('company-laws.edit');
+    Route::put('/company-laws', [CompanyLawController::class, 'update'])->name('company-laws.update');
 });
 
 require __DIR__.'/auth.php';
