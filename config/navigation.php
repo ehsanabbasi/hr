@@ -101,6 +101,21 @@ return [
             ],
         ],
         [
+            'label' => 'Feedback',
+            'icon' => 'fas fa-comment-dots',
+            'submenu' => [
+                [
+                    'label' => 'My Feedbacks',
+                    'route' => 'feedbacks.index',
+                ],
+                [
+                    'label' => 'Send Feedback',
+                    'route' => 'users.index',
+                    'description' => 'Select a user to send feedback to',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',

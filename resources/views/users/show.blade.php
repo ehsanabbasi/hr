@@ -71,6 +71,12 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="mt-4">
+                <a href="{{ route('feedbacks.create', $user) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Send Feedback
+                </a>
+            </div>
         </div>
     </div>
 </x-dashboard-layout> 

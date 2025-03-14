@@ -10,6 +10,7 @@ use App\Http\Controllers\LeaveApprovalController;
 use App\Http\Controllers\LeaveReasonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FacilityNeedController;
+use App\Http\Controllers\FeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +22,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Authentication routes (provided by Laravel Breeze/UI)
-// These are already defined if you're using Laravel's auth scaffolding
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
 
-// Routes that require authentication
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -69,6 +69,13 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('facility-needs', FacilityNeedController::class);
     Route::patch('facility-needs/{facilityNeed}/status', [FacilityNeedController::class, 'updateStatus'])
         ->name('facility-needs.update-status');
+
+    // Feedback routes
+    Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::get('/feedbacks/create/{user}', [FeedbackController::class, 'create'])->name('feedbacks.create');
+    Route::post('/feedbacks', [FeedbackController::class, 'store'])->name('feedbacks.store');
+    Route::get('/feedbacks/{feedback}', [FeedbackController::class, 'show'])->name('feedbacks.show');
+    Route::delete('/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])->name('feedbacks.destroy');
 });
 
 require __DIR__.'/auth.php';

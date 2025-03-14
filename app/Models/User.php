@@ -106,4 +106,14 @@ class User extends Authenticatable
             $query->whereIn('department_id', $departmentIds);
         })->where('status', 'pending');
     }
+
+    public function sentFeedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'sender_id');
+    }
+
+    public function receivedFeedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'receiver_id');
+    }
 }
