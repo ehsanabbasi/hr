@@ -17,9 +17,9 @@ services:
             DB_CONNECTION: mysql
             DB_HOST: db
             DB_PORT: 3306
-            DB_DATABASE: ${DB_DATABASE:-laravel}
-            DB_USERNAME: ${DB_USERNAME:-root}
-            DB_PASSWORD: ${DB_PASSWORD:-secret}
+            DB_DATABASE: ${DB_DATABASE}
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
 
     # Nginx Service
     webserver:
@@ -41,11 +41,13 @@ services:
         image: mysql:8.0
         container_name: laravel_db
         restart: unless-stopped
+        ports:
+            - "3306:3306"
         environment:
-            MYSQL_DATABASE: ${DB_DATABASE:-laravel}
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-secret}
-            MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
-            MYSQL_USER: ${DB_USERNAME:-root}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
         volumes:
             - dbdata:/var/lib/mysql
         networks:
