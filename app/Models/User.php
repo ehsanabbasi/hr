@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -50,9 +51,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Get the department that the user belongs to.
-     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
@@ -74,11 +77,27 @@ class User extends Authenticatable
         return $this->hasMany(Department::class, 'head_id');
     }
 
-    /**
-     * Check if the user is a head of any department.
-     */
     public function isHeadOfDepartment(): bool
     {
         return $this->headOfDepartments()->exists();
+    }
+
+    public function leaveRequests(): HasMany
+    {
+        return $this->hasMany(LeaveRequest::class);
+    }
+   
+    public function processedLeaveRequests(): HasMany
+    {
+        return $this->hasMany(LeaveRequest::class, 'approved_by');
+    }
+
+    public function pendingDepartmentLeaveRequests()
+    {
+        $departmentIds = $this->headOfDepartments()->pluck('id');
+        
+        return LeaveRequest::whereHas('user', function ($query) use ($departmentIds) {
+            $query->whereIn('department_id', $departmentIds);
+        })->where('status', 'pending');
     }
 }

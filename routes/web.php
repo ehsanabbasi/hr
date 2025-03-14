@@ -1,52 +1,68 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\JobTitleController;
+use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LeaveApprovalController;
+use App\Http\Controllers\LeaveReasonController;
+use App\Http\Controllers\ProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Authentication routes (provided by Laravel Breeze/UI)
+// These are already defined if you're using Laravel's auth scaffolding
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// Google login
-Route::get('/auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])
-    ->name('auth.google');
-Route::get('/auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
-
-// Add these routes to your existing web.php file
+// Routes that require authentication
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', function() {
         return view('settings');
     })->name('settings');
+    // User Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     
-    // User routes
-    Route::resource('users', App\Http\Controllers\UserController::class);
+    // Users
+    Route::resource('users', UserController::class);
     
-    // Profile routes
-    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-    
-    // Department routes
-    Route::resource('departments', App\Http\Controllers\DepartmentController::class);
-    
-    // Job Title routes
-    Route::resource('job-titles', App\Http\Controllers\JobTitleController::class);
-    Route::get('departments/{department}/job-titles', [App\Http\Controllers\JobTitleController::class, 'getByDepartment'])
+    // Departments
+    Route::resource('departments', DepartmentController::class);
+    Route::get('departments/{department}/job-titles', [JobTitleController::class, 'getByDepartment'])
         ->name('departments.job-titles');
     
-    // User job titles by department
-    Route::get('users/job-titles', [App\Http\Controllers\UserController::class, 'getJobTitles'])
+    // Job Titles
+    Route::resource('job-titles', JobTitleController::class);
+    Route::get('users/job-titles', [UserController::class, 'getJobTitles'])
         ->name('users.job-titles');
+    
+    // Leave Management
+    
+    // Leave Reasons (will be admin only later)
+    Route::resource('leave-reasons', LeaveReasonController::class);
+    
+    // Leave Requests (for all authenticated users)
+    Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
+    Route::get('/leave-requests/create', [LeaveRequestController::class, 'create'])->name('leave-requests.create');
+    Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
+    Route::get('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('leave-requests.show');
+    Route::delete('/leave-requests/{leaveRequest}/cancel', [LeaveRequestController::class, 'cancel'])->name('leave-requests.cancel');
+    
+    // Leave Approvals (will be department head only later)
+    Route::get('/leave-approvals', [LeaveApprovalController::class, 'index'])->name('leave-approvals.index');
+    Route::get('/leave-approvals/{leaveRequest}', [LeaveApprovalController::class, 'show'])->name('leave-approvals.show');
+    Route::post('/leave-approvals/{leaveRequest}/process', [LeaveApprovalController::class, 'process'])->name('leave-approvals.process');
 });
 
 require __DIR__.'/auth.php';
