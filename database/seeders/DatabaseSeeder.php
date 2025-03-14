@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             JobTitleSeeder::class,
             UserSeeder::class,
+            DocumentTypeSeeder::class,
         ]);
     }
 }

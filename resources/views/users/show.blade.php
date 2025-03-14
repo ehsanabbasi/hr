@@ -77,6 +77,19 @@
                     Send Feedback
                 </a>
             </div>
+            
+            <div class="mt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">User Documents</h2>
+                    @can('create', [App\Models\UserDocument::class, $user])
+                        <a href="{{ route('users.documents.create', $user) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Upload Document</a>
+                    @endcan
+                </div>
+                
+                <a href="{{ route('users.documents.index', $user) }}" class="text-blue-600 hover:underline">
+                    View all documents
+                </a>
+            </div>
         </div>
     </div>
 </x-dashboard-layout> 

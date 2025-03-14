@@ -120,6 +120,23 @@ return [
             'route' => 'settings',
             'icon' => 'fas fa-cog',
         ],
+        [
+            'label' => 'Document Types',
+            'icon' => 'fas fa-file-alt',
+            'permission' => 'view document types',
+            'submenu' => [
+                [
+                    'label' => 'All Document Types',
+                    'route' => 'document-types.index',
+                    'permission' => 'view document types',
+                ],
+                [
+                    'label' => 'Add New',
+                    'route' => 'document-types.create',
+                    'permission' => 'create document types',
+                ],
+            ],
+        ],
         // Add more menu items as needed
     ],
 ]; 

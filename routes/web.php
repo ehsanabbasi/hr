@@ -11,6 +11,8 @@ use App\Http\Controllers\LeaveReasonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FacilityNeedController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\UserDocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +78,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/feedbacks', [FeedbackController::class, 'store'])->name('feedbacks.store');
     Route::get('/feedbacks/{feedback}', [FeedbackController::class, 'show'])->name('feedbacks.show');
     Route::delete('/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])->name('feedbacks.destroy');
+
+    // Document Types (Admin only)
+    Route::resource('document-types', DocumentTypeController::class);
+
+    // User Documents
+    Route::prefix('users/{user}/documents')->name('users.documents.')->group(function () {
+        Route::get('/', [UserDocumentController::class, 'index'])->name('index');
+        Route::get('/create', [UserDocumentController::class, 'create'])->name('create');
+        Route::post('/', [UserDocumentController::class, 'store'])->name('store');
+        Route::get('/{document}', [UserDocumentController::class, 'show'])->name('show');
+        Route::get('/{document}/download', [UserDocumentController::class, 'download'])->name('download');
+        Route::delete('/{document}', [UserDocumentController::class, 'destroy'])->name('destroy');
+    });
 });
 
 require __DIR__.'/auth.php';

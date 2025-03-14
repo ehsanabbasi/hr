@@ -48,6 +48,15 @@ class RolesAndPermissionsSeeder extends Seeder
             'view department leave requests',
             'approve leave requests',
             'reject leave requests',
+            
+            // Document permissions
+            'view document types',
+            'create document types',
+            'edit document types',
+            'delete document types',
+            'upload user documents',
+            'view user documents',
+            'delete user documents',
         ];
 
         foreach ($permissions as $permission) {
@@ -77,6 +86,22 @@ class RolesAndPermissionsSeeder extends Seeder
             'view own leave requests',
             'create leave requests',
             'cancel own leave requests',
+        ]);
+        
+        // HR role
+        $hrRole = Role::create(['name' => 'hr']);
+        $hrRole->givePermissionTo([
+            'view document types',
+            'upload user documents',
+            'view user documents',
+            'delete user documents',
+        ]);
+        
+        // Regular user role
+        $userRole = Role::create(['name' => 'user']);
+        $userRole->givePermissionTo([
+            'upload user documents',
+            'view user documents',
         ]);
         
         // Assign admin role to user ID 1 (assuming this is your admin user)

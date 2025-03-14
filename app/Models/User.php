@@ -116,4 +116,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feedback::class, 'receiver_id');
     }
+
+    public function documents()
+    {
+        return $this->hasMany(UserDocument::class);
+    }
+
+    public function uploadedDocuments()
+    {
+        return $this->hasMany(UserDocument::class, 'uploaded_by');
+    }
 }
