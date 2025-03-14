@@ -9,6 +9,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveApprovalController;
 use App\Http\Controllers\LeaveReasonController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FacilityNeedController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leave-approvals', [LeaveApprovalController::class, 'index'])->name('leave-approvals.index');
     Route::get('/leave-approvals/{leaveRequest}', [LeaveApprovalController::class, 'show'])->name('leave-approvals.show');
     Route::post('/leave-approvals/{leaveRequest}/process', [LeaveApprovalController::class, 'process'])->name('leave-approvals.process');
+
+    // Facility Needs Routes
+    Route::resource('facility-needs', FacilityNeedController::class);
+    Route::patch('facility-needs/{facilityNeed}/status', [FacilityNeedController::class, 'updateStatus'])
+        ->name('facility-needs.update-status');
 });
 
 require __DIR__.'/auth.php';

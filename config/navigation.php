@@ -80,6 +80,27 @@ return [
             ]
         ],
         [
+            'label' => 'Facility Needs',
+            'icon' => 'fas fa-tools',
+            'submenu' => [
+                [
+                    'label' => 'My Requests',
+                    'route' => 'facility-needs.index',
+                    'permission' => 'view own facility needs',
+                ],
+                [
+                    'label' => 'All Requests',
+                    'route' => 'facility-needs.index',
+                    'permission' => 'view all facility needs',
+                ],
+                [
+                    'label' => 'Create Request',
+                    'route' => 'facility-needs.create',
+                    'permission' => 'create facility needs',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',
