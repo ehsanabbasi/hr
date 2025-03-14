@@ -29,6 +29,10 @@ class User extends Authenticatable
         'avatar',
         'department_id',
         'job_title_id',
+        'birthday',
+        'start_date',
+        'emergency_contact_name',
+        'emergency_contact_phone',
     ];
 
     /**
@@ -49,6 +53,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'birthday' => 'date',
+        'start_date' => 'date',
     ];
 
     public function isAdmin(): bool

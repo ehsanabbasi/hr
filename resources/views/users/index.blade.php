@@ -28,7 +28,11 @@
                     <tbody>
                         @foreach($users as $user)
                             <tr class="border-b">
-                                <td class="py-3 px-6">{{ $user->name }}</td>
+                                <td class="py-3 px-6">
+                                    <a href="{{ route('users.show', $user) }}" class="text-blue-600 hover:text-blue-900 hover:underline">
+                                        {{ $user->name }}
+                                    </a>
+                                </td>
                                 <td class="py-3 px-6">{{ $user->email }}</td>
                                 <td class="py-3 px-6">{{ $user->department ? $user->department->name : 'Not assigned' }}</td>
                                 <td class="py-3 px-6">{{ $user->jobTitle ? $user->jobTitle->name : 'Not assigned' }}</td>

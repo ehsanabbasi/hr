@@ -76,6 +76,42 @@
                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 
+                <div class="mb-4">
+                    <label for="birthday" class="block mb-2 text-sm font-medium text-gray-700">Birthday</label>
+                    <input id="birthday" type="date" name="birthday" value="{{ old('birthday') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    @error('birthday')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div class="mb-4">
+                    <label for="start_date" class="block mb-2 text-sm font-medium text-gray-700">Start Date</label>
+                    <input id="start_date" type="date" name="start_date" value="{{ old('start_date') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    @error('start_date')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div class="mb-4">
+                    <label for="emergency_contact_name" class="block mb-2 text-sm font-medium text-gray-700">Emergency Contact Name</label>
+                    <input id="emergency_contact_name" type="text" name="emergency_contact_name" value="{{ old('emergency_contact_name') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    @error('emergency_contact_name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+                <div class="mb-4">
+                    <label for="emergency_contact_phone" class="block mb-2 text-sm font-medium text-gray-700">Emergency Contact Phone</label>
+                    <input id="emergency_contact_phone" type="text" name="emergency_contact_phone" value="{{ old('emergency_contact_phone') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    @error('emergency_contact_phone')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                
                 <div class="flex items-center justify-end">
                     <a href="{{ route('users.index') }}" class="text-gray-600 mr-4">Cancel</a>
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">

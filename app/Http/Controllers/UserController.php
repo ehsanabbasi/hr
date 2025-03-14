@@ -39,6 +39,10 @@ class UserController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'department_id' => 'nullable|exists:departments,id',
             'job_title_id' => 'nullable|exists:job_titles,id',
+            'birthday' => 'nullable|date',
+            'start_date' => 'nullable|date',
+            'emergency_contact_name' => 'nullable|string|max:255',
+            'emergency_contact_phone' => 'nullable|string|max:20',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -78,6 +82,10 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'department_id' => 'nullable|exists:departments,id',
             'job_title_id' => 'nullable|exists:job_titles,id',
+            'birthday' => 'nullable|date',
+            'start_date' => 'nullable|date',
+            'emergency_contact_name' => 'nullable|string|max:255',
+            'emergency_contact_phone' => 'nullable|string|max:20',
         ]);
         
         if ($request->filled('password')) {
