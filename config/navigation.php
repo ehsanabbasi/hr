@@ -206,6 +206,21 @@ return [
             ],
         ],
         [
+            'label' => 'Onboarding',
+            'icon' => 'fas fa-clipboard-check',
+            'submenu' => [
+                [
+                    'label' => 'My Onboarding',
+                    'route' => 'onboarding.index',
+                ],
+                [
+                    'label' => 'Create Task',
+                    'route' => 'onboarding.create',
+                    'permission' => 'create onboarding tasks',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',

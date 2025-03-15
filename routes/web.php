@@ -17,6 +17,7 @@ use App\Http\Controllers\WorkingHourController;
 use App\Http\Controllers\CompanyLawController;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\OnboardingTaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('surveys/{survey}/results', [SurveyController::class, 'results'])->name('surveys.results');
     Route::get('surveys/{survey}/assign', [SurveyController::class, 'assign'])->name('surveys.assign');
     Route::post('surveys/{survey}/assign', [SurveyController::class, 'assignStore'])->name('surveys.assign.store');
+
+    // Onboarding Tasks
+    Route::get('/onboarding', [OnboardingTaskController::class, 'index'])->name('onboarding.index');
+    Route::get('/onboarding/create', [OnboardingTaskController::class, 'create'])->name('onboarding.create');
+    Route::post('/onboarding', [OnboardingTaskController::class, 'store'])->name('onboarding.store');
+    Route::get('/onboarding/{task}/edit', [OnboardingTaskController::class, 'edit'])->name('onboarding.edit');
+    Route::put('/onboarding/{task}', [OnboardingTaskController::class, 'update'])->name('onboarding.update');
+    Route::patch('/onboarding/{task}/status', [OnboardingTaskController::class, 'updateStatus'])->name('onboarding.update-status');
+    Route::delete('/onboarding/{task}', [OnboardingTaskController::class, 'destroy'])->name('onboarding.destroy');
+
+    // User onboarding
+    Route::get('/users/{user}/onboarding', [OnboardingTaskController::class, 'userOnboarding'])->name('users.onboarding');
     
 });
 

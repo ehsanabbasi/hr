@@ -133,4 +133,8 @@ class User extends Authenticatable
             ->withPivot('completed_at')
             ->withTimestamps();
     }
+    public function onboardingTasks()
+    {
+        return $this->hasMany(OnboardingTask::class);
+    }
 }
