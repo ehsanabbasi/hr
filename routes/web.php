@@ -15,6 +15,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\WorkingHourController;
 use App\Http\Controllers\CompanyLawController;
+use App\Http\Controllers\PollController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/company-laws', [CompanyLawController::class, 'index'])->name('company-laws.index');
     Route::get('/company-laws/edit', [CompanyLawController::class, 'edit'])->name('company-laws.edit');
     Route::put('/company-laws', [CompanyLawController::class, 'update'])->name('company-laws.update');
+
+    // Poll routes
+    Route::resource('polls', PollController::class);
+    Route::post('polls/{poll}/respond', [PollController::class, 'respond'])->name('polls.respond');
+    Route::get('polls/{poll}/results', [PollController::class, 'results'])->name('polls.results');
 });
 
 require __DIR__.'/auth.php';

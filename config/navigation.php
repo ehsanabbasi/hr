@@ -170,6 +170,21 @@ return [
             ],
         ],
         [
+            'label' => 'Polls',
+            'icon' => 'fas fa-poll',
+            'submenu' => [
+                [
+                    'label' => 'All Polls',
+                    'route' => 'polls.index',
+                ],
+                [
+                    'label' => 'Create Poll',
+                    'route' => 'polls.create',
+                    'permission' => 'create polls',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',
