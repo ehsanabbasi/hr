@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             JobTitleSeeder::class,
             UserSeeder::class,
             DocumentTypeSeeder::class,
+            UserBirthdaySeeder::class,
         ]);
     }
 }
