@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -125,5 +126,11 @@ class User extends Authenticatable
     public function uploadedDocuments()
     {
         return $this->hasMany(UserDocument::class, 'uploaded_by');
+    }
+    public function surveys(): BelongsToMany
+    {
+        return $this->belongsToMany(Survey::class, 'survey_user')
+            ->withPivot('completed_at')
+            ->withTimestamps();
     }
 }

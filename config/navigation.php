@@ -185,6 +185,27 @@ return [
             ],
         ],
         [
+            'label' => 'Surveys',
+            'icon' => 'fas fa-clipboard-list',
+            'submenu' => [
+                [
+                    'label' => 'All Surveys',
+                    'route' => 'surveys.index',
+                ],
+                [
+                    'label' => 'Create Survey',
+                    'route' => 'surveys.create',
+                    'permission' => 'create surveys',
+                ],
+                [
+                    'label' => 'Assign Survey',
+                    'route' => 'surveys.index',
+                    'permission' => 'assign surveys',
+                    'description' => 'Select a survey to assign to users',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',

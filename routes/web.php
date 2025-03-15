@@ -16,6 +16,7 @@ use App\Http\Controllers\UserDocumentController;
 use App\Http\Controllers\WorkingHourController;
 use App\Http\Controllers\CompanyLawController;
 use App\Http\Controllers\PollController;
+use App\Http\Controllers\SurveyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +113,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('polls', PollController::class);
     Route::post('polls/{poll}/respond', [PollController::class, 'respond'])->name('polls.respond');
     Route::get('polls/{poll}/results', [PollController::class, 'results'])->name('polls.results');
+
+    // Survey routes
+    
+    Route::resource('surveys', SurveyController::class);
+    Route::post('surveys/{survey}/submit', [SurveyController::class, 'submit'])->name('surveys.submit');
+    Route::get('surveys/{survey}/results', [SurveyController::class, 'results'])->name('surveys.results');
+    Route::get('surveys/{survey}/assign', [SurveyController::class, 'assign'])->name('surveys.assign');
+    Route::post('surveys/{survey}/assign', [SurveyController::class, 'assignStore'])->name('surveys.assign.store');
+    
 });
 
 require __DIR__.'/auth.php';
