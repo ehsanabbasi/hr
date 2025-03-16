@@ -18,6 +18,8 @@ use App\Http\Controllers\CompanyLawController;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\OnboardingTaskController;
+use App\Http\Controllers\CareerOpportunityController;
+use App\Http\Controllers\CareerOpportunityCandidateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +137,27 @@ Route::middleware(['auth'])->group(function () {
     // User onboarding
     Route::get('/users/{user}/onboarding', [OnboardingTaskController::class, 'userOnboarding'])->name('users.onboarding');
     
+
+    // Career Opportunities
+    Route::resource('career-opportunities', CareerOpportunityController::class);
+    
+    // Career Opportunity Candidates
+    Route::get('career-opportunities/{careerOpportunity}/candidates', [CareerOpportunityCandidateController::class, 'index'])
+        ->name('career-opportunities.candidates.index');
+    Route::get('career-opportunities/{careerOpportunity}/candidates/create', [CareerOpportunityCandidateController::class, 'create'])
+        ->name('career-opportunities.candidates.create');
+    Route::post('career-opportunities/{careerOpportunity}/candidates', [CareerOpportunityCandidateController::class, 'store'])
+        ->name('career-opportunities.candidates.store');
+    Route::get('career-opportunities/{careerOpportunity}/candidates/{candidate}', [CareerOpportunityCandidateController::class, 'show'])
+        ->name('career-opportunities.candidates.show');
+    Route::get('career-opportunities/{careerOpportunity}/candidates/{candidate}/edit', [CareerOpportunityCandidateController::class, 'edit'])
+        ->name('career-opportunities.candidates.edit');
+    Route::put('career-opportunities/{careerOpportunity}/candidates/{candidate}', [CareerOpportunityCandidateController::class, 'update'])
+        ->name('career-opportunities.candidates.update');
+    Route::delete('career-opportunities/{careerOpportunity}/candidates/{candidate}', [CareerOpportunityCandidateController::class, 'destroy'])
+        ->name('career-opportunities.candidates.destroy');
+    Route::get('career-opportunities/{careerOpportunity}/candidates/{candidate}/resume', [CareerOpportunityCandidateController::class, 'downloadResume'])
+        ->name('career-opportunities.candidates.resume');
 });
 
 require __DIR__.'/auth.php';

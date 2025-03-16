@@ -221,6 +221,23 @@ return [
             ],
         ],
         [
+            'label' => 'Career Opportunities',
+            'icon' => 'fas fa-briefcase',
+            'permission' => 'view career opportunities',
+            'submenu' => [
+                [
+                    'label' => 'All Career Opportunities',
+                    'route' => 'career-opportunities.index',
+                    'permission' => 'view career opportunities',
+                ],
+                [
+                    'label' => 'Add New Career Opportunity',
+                    'route' => 'career-opportunities.create',
+                    'permission' => 'create career opportunities',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',

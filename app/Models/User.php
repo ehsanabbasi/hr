@@ -127,14 +127,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserDocument::class, 'uploaded_by');
     }
+    
     public function surveys(): BelongsToMany
     {
         return $this->belongsToMany(Survey::class, 'survey_user')
             ->withPivot('completed_at')
             ->withTimestamps();
     }
+    
     public function onboardingTasks()
     {
         return $this->hasMany(OnboardingTask::class);
     }
+
+    public function reviewCareerOpportunities(): BelongsToMany
+    {
+        return $this->belongsToMany(CareerOpportunity::class, 'career_opportunity_reviewers')
+            ->withTimestamps();
+    }
+
 }
