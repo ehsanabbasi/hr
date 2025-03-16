@@ -186,22 +186,44 @@
                 </div>
                 
                 @if($totalTasks > 0)
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        @foreach($onboardingTasks->take(4) as $task)
-                            <div class="border rounded-lg p-3 flex justify-between items-center">
-                                <div>
-                                    <span class="font-medium">{{ $task->title }}</span>
-                                    <span class="ml-2 px-2 py-0.5 text-xs rounded-full 
-                                        {{ $task->status === 'ready' ? 'bg-gray-100 text-gray-800' : 
-                                        ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
-                                        {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-                                    </span>
-                                </div>
-                            </div>
-                        @endforeach
+                    <div class="mt-4">
+                        <ul class="divide-y divide-gray-200 border rounded-lg overflow-hidden">
+                            @foreach($onboardingTasks as $task)
+                                <li class="p-4 flex items-center justify-between bg-white hover:bg-gray-50">
+                                    <div class="flex items-center flex-grow">
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center">
+                                                <h3 class="text-sm font-medium text-gray-900 truncate">{{ $task->title }}</h3>
+                                                <span class="ml-2 px-2 py-0.5 text-xs rounded-full 
+                                                    {{ $task->status === 'ready' ? 'bg-gray-100 text-gray-800' : 
+                                                    ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                                </span>
+                                            </div>
+                                            @if($task->description)
+                                                <p class="text-xs text-gray-500 truncate mt-1">{{ Str::limit($task->description, 100) }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="ml-4 flex-shrink-0 flex items-center text-sm text-gray-500">
+                                        @if($task->completed_at)
+                                            <span class="mr-3">Completed: {{ $task->completed_at->format('M d, Y') }}</span>
+                                        @else
+                                            <span class="mr-3">Created: {{ $task->created_at->format('M d, Y') }}</span>
+                                        @endif
+                                        <a href="{{ route('onboarding.edit', $task) }}" class="text-blue-600 hover:text-blue-900">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
                     
-                    @if($totalTasks > 4)
+                    @if($totalTasks > 10)
                         <div class="mt-2 text-right">
                             <a href="{{ route('users.onboarding', $user) }}" class="text-blue-600 hover:underline">
                                 View all {{ $totalTasks }} tasks

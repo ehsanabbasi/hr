@@ -38,75 +38,82 @@
                     <p>No onboarding tasks found for this user.</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @foreach($tasks as $task)
-                        <div class="border rounded-lg overflow-hidden shadow-sm">
-                            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
-                                <h3 class="font-semibold text-lg">{{ $task->title }}</h3>
-                                <span class="px-2 py-1 text-xs rounded-full 
-                                    {{ $task->status === 'ready' ? 'bg-gray-100 text-gray-800' : 
-                                       ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
-                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
-                                </span>
-                            </div>
-                            <div class="p-4">
-                                <p class="text-gray-700 mb-4">{{ $task->description }}</p>
-                                
-                                <div class="flex justify-between items-center">
-                                    <div class="text-sm text-gray-500">
-                                        @if($task->completed_at)
-                                            Completed: {{ $task->completed_at->format('M d, Y') }}
-                                        @else
-                                            Created: {{ $task->created_at->format('M d, Y') }}
+                <div class="mt-4">
+                    <ul class="divide-y divide-gray-200 border rounded-lg overflow-hidden">
+                        @foreach($tasks as $task)
+                            <li class="p-4 bg-white hover:bg-gray-50">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center">
+                                            <h3 class="text-sm font-medium text-gray-900">{{ $task->title }}</h3>
+                                            <span class="ml-2 px-2 py-0.5 text-xs rounded-full 
+                                                {{ $task->status === 'ready' ? 'bg-gray-100 text-gray-800' : 
+                                                   ($task->status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
+                                                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                            </span>
+                                        </div>
+                                        
+                                        @if($task->description)
+                                            <p class="text-xs text-gray-500 mt-1">{{ Str::limit($task->description, 100) }}</p>
                                         @endif
                                     </div>
                                     
-                                    <div class="flex space-x-2">
-                                        @can('updateStatus', $task)
-                                            <form action="{{ route('onboarding.update-status', $task) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                
-                                                @if($task->status === 'ready')
-                                                    <input type="hidden" name="status" value="in_progress">
-                                                    <button type="submit" class="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                                        Start
-                                                    </button>
-                                                @elseif($task->status === 'in_progress')
-                                                    <input type="hidden" name="status" value="done">
-                                                    <button type="submit" class="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-                                                        Complete
-                                                    </button>
-                                                @elseif($task->status === 'done')
-                                                    <input type="hidden" name="status" value="in_progress">
-                                                    <button type="submit" class="text-xs px-2 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700">
-                                                        Reopen
-                                                    </button>
-                                                @endif
-                                            </form>
-                                        @endcan
+                                    <div class="flex items-center space-x-4">
+                                        <div class="text-sm text-gray-500">
+                                            @if($task->completed_at)
+                                                <span>Completed: {{ $task->completed_at->format('M d, Y') }}</span>
+                                            @else
+                                                <span>Created: {{ $task->created_at->format('M d, Y') }}</span>
+                                            @endif
+                                        </div>
                                         
-                                        @can('update', $task)
-                                            <a href="{{ route('onboarding.edit', $task) }}" class="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">
-                                                Edit
-                                            </a>
-                                        @endcan
-                                        
-                                        @can('delete', $task)
-                                            <form action="{{ route('onboarding.destroy', $task) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700" 
-                                                        onclick="return confirm('Are you sure you want to delete this task?')">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        @endcan
+                                        <div class="flex space-x-2">
+                                            @can('updateStatus', $task)
+                                                <form action="{{ route('onboarding.update-status', $task) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    
+                                                    @if($task->status === 'ready')
+                                                        <input type="hidden" name="status" value="in_progress">
+                                                        <button type="submit" class="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                                            Start
+                                                        </button>
+                                                    @elseif($task->status === 'in_progress')
+                                                        <input type="hidden" name="status" value="done">
+                                                        <button type="submit" class="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                                                            Complete
+                                                        </button>
+                                                    @elseif($task->status === 'done')
+                                                        <input type="hidden" name="status" value="in_progress">
+                                                        <button type="submit" class="text-xs px-2 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                                                            Reopen
+                                                        </button>
+                                                    @endif
+                                                </form>
+                                            @endcan
+                                            
+                                            @can('update', $task)
+                                                <a href="{{ route('onboarding.edit', $task) }}" class="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700">
+                                                    Edit
+                                                </a>
+                                            @endcan
+                                            
+                                            @can('delete', $task)
+                                                <form action="{{ route('onboarding.destroy', $task) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-xs px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700" 
+                                                            onclick="return confirm('Are you sure you want to delete this task?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            @endcan
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    @endforeach
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
         </div>
