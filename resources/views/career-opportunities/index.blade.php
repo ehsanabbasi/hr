@@ -42,7 +42,7 @@
                             <th class="py-3 px-6 text-left bg-gray-100">Department</th>
                             <th class="py-3 px-6 text-left bg-gray-100">Level</th>
                             <th class="py-3 px-6 text-left bg-gray-100">Status</th>
-                            <th class="py-3 px-6 text-left bg-gray-100">Candidates</th>
+                            <th class="py-3 px-6 text-center bg-gray-100">Candidates</th>
                             <th class="py-3 px-6 text-left bg-gray-100">Actions</th>
                         </tr>
                     </thead>
@@ -57,13 +57,21 @@
                                         {{ $opportunity->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
-                                <td class="py-3 px-6">{{ $opportunity->candidates->count() }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    @can('viewCandidates', $opportunity)
+                                        <a href="{{ route('career-opportunities.candidates.index', $opportunity) }}" 
+                                           class="inline-flex items-center px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                                            <span class="mr-1">{{ $opportunity->candidates->count() }}</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                            </svg>
+                                        </a>
+                                    @else
+                                        <span class="text-gray-600">{{ $opportunity->candidates->count() }}</span>
+                                    @endcan
+                                </td>
                                 <td class="py-3 px-6 flex space-x-2">
                                     <a href="{{ route('career-opportunities.show', $opportunity) }}" class="text-blue-600 hover:text-blue-900">View</a>
-                                    
-                                    @can('viewCandidates', $opportunity)
-                                        <a href="{{ route('career-opportunities.candidates.index', $opportunity) }}" class="text-green-600 hover:text-green-900">Candidates</a>
-                                    @endcan
                                     
                                     @can('update', $opportunity)
                                         <a href="{{ route('career-opportunities.edit', $opportunity) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
