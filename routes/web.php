@@ -22,6 +22,7 @@ use App\Http\Controllers\CareerOpportunityController;
 use App\Http\Controllers\CareerOpportunityCandidateController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\UserCertificateController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,6 +173,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{certificate}/download', [UserCertificateController::class, 'download'])->name('download');
         Route::delete('/{certificate}', [UserCertificateController::class, 'destroy'])->name('destroy');
     });
+
+    // Notification routes
+    Route::get('/notifications/latest', [NotificationController::class, 'getLatestNotifications'])->name('notifications.latest');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
+    Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
 });
 
 require __DIR__.'/auth.php';

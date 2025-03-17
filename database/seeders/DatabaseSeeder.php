@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DocumentTypeSeeder::class,
             UserBirthdaySeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }

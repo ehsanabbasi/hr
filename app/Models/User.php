@@ -158,4 +158,14 @@ class User extends Authenticatable
         return $this->hasMany(UserCertificate::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->orderBy('created_at', 'desc');
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->whereNull('read_at');
+    }
+
 }
