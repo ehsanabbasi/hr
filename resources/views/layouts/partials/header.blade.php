@@ -52,7 +52,7 @@
             
             getIconClass(notification) {
                 if (notification.icon) {
-                    return notification.icon;
+                    return 'fas ' + notification.icon;
                 }
                 
                 // Default icons based on type
@@ -65,6 +65,11 @@
                 };
                 
                 return iconMap[notification.type] || 'fas fa-bell';
+            },
+            
+            truncateText(text, length = 60) {
+                if (!text) return '';
+                return text.length > length ? text.substring(0, length) + '...' : text;
             },
             
             formatDate(dateString) {
@@ -122,21 +127,23 @@
                     </div>
                 </div>
                 
-                <div class="max-h-60 overflow-y-auto">
+                <div class="max-h-72 overflow-y-auto custom-scrollbar">
                     <template x-if="notifications.length > 0">
                         <div>
                             <template x-for="notification in notifications" :key="notification.id">
                                 <a :href="`/notifications/${notification.id}`" 
-                                   class="block px-4 py-2 hover:bg-gray-100 transition duration-150 ease-in-out"
+                                   class="block px-4 py-3 hover:bg-gray-100 transition duration-150 ease-in-out border-b border-gray-100"
                                    :class="{ 'bg-blue-50': !notification.read_at }">
                                     <div class="flex">
-                                        <div class="mr-3" :class="notification.read_at ? 'text-gray-500' : 'text-blue-500'">
+                                        <div class="flex-shrink-0 mr-3" :class="notification.read_at ? 'text-gray-500' : 'text-blue-500'">
                                             <i :class="getIconClass(notification)"></i>
                                         </div>
-                                        <div class="flex-1">
-                                            <p class="text-sm font-medium text-gray-900" x-text="notification.title"></p>
-                                            <p class="text-xs text-gray-600 truncate" x-text="notification.content"></p>
-                                            <p class="text-xs text-gray-500 mt-1" x-text="formatDate(notification.created_at)"></p>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex justify-between items-start">
+                                                <h4 class="text-sm font-medium text-gray-900 truncate" x-text="notification.title"></h4>
+                                                <span class="text-xs text-gray-500 ml-2 whitespace-nowrap" x-text="formatDate(notification.created_at)"></span>
+                                            </div>
+                                            <p class="text-xs text-gray-600 mt-1" x-text="truncateText(notification.content, 80)"></p>
                                         </div>
                                     </div>
                                 </a>
@@ -195,4 +202,24 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+</style> 

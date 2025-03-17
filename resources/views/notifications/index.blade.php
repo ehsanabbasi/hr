@@ -19,7 +19,8 @@
                         <div class="p-4 {{ is_null($notification->read_at) ? 'bg-blue-50' : 'bg-white' }} hover:bg-gray-50 transition">
                             <div class="flex items-start">
                                 <div class="mr-4 text-{{ is_null($notification->read_at) ? 'blue' : 'gray' }}-500 pt-1">
-                                    <i class="{{ $notification->icon_class }} fa-lg"></i>
+                                 
+                                <i class="fas {{$notification->getIconClassAttribute()}} fa-lg"></i>
                                 </div>
                                 <div class="flex-1">
                                     <div class="flex justify-between">
