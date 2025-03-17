@@ -18,6 +18,8 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\FacilityNeed::class => \App\Policies\FacilityNeedPolicy::class,
         \App\Models\UserDocument::class => \App\Policies\UserDocumentPolicy::class,
         \App\Models\OnboardingTask::class => \App\Policies\OnboardingTaskPolicy::class,
+        \App\Models\Certificate::class => \App\Policies\CertificatePolicy::class,
+        \App\Models\UserCertificate::class => \App\Policies\UserCertificatePolicy::class,
     ];
 
     /**

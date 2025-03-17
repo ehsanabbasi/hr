@@ -23,6 +23,9 @@
                     <button id="tab-onboarding" class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
                         Onboarding Progress
                     </button>
+                    <button id="tab-certificates" class="tab-button py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        Certificates
+                    </button>
                 </nav>
             </div>
             
@@ -238,6 +241,77 @@
                                 Create onboarding tasks
                             </a>
                         @endcan
+                    </div>
+                @endif
+            </div>
+            
+            <!-- Tab Content: Certificates -->
+            <div id="content-certificates" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">User Certificates</h2>
+                    @can('viewAny', [App\Models\UserCertificate::class, $user])
+                        <a href="{{ route('users.certificates.index', $user) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">View All Certificates</a>
+                    @endcan
+                </div>
+                
+                @if($user->userCertificates->isEmpty())
+                    <div class="bg-gray-100 p-4 rounded-md">
+                        <p>No certificates found for this user.</p>
+                    </div>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 px-6 text-left bg-gray-100">Title</th>
+                                    <th class="py-3 px-6 text-left bg-gray-100">Due Date</th>
+                                    <th class="py-3 px-6 text-left bg-gray-100">Status</th>
+                                    <th class="py-3 px-6 text-left bg-gray-100">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($user->userCertificates()->with('certificate')->latest()->take(5)->get() as $certificate)
+                                    <tr class="border-b">
+                                        <td class="py-3 px-6">
+                                            <a href="{{ route('users.certificates.show', [$user, $certificate]) }}" class="text-blue-600 hover:text-blue-900 hover:underline">
+                                                {{ $certificate->certificate->title }}
+                                            </a>
+                                        </td>
+                                        <td class="py-3 px-6">
+                                            {{ $certificate->certificate->due_date ? $certificate->certificate->due_date->format('M d, Y') : 'No due date' }}
+                                        </td>
+                                        <td class="py-3 px-6">
+                                            @if($certificate->status === 'completed')
+                                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Completed</span>
+                                            @else
+                                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pending</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 px-6 flex space-x-2">
+                                            <a href="{{ route('users.certificates.show', [$user, $certificate]) }}" class="text-blue-600 hover:text-blue-900">View</a>
+                                            
+                                            @if($certificate->file_path)
+                                                <a href="{{ route('users.certificates.download', [$user, $certificate]) }}" class="text-green-600 hover:text-green-900">Download</a>
+                                            @endif
+                                            
+                                            @can('delete', $certificate)
+                                                <form action="{{ route('users.certificates.destroy', [$user, $certificate]) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this certificate assignment?')">Delete</button>
+                                                </form>
+                                            @endcan
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{{ route('users.certificates.index', $user) }}" class="text-blue-600 hover:underline">
+                            View all certificates
+                        </a>
                     </div>
                 @endif
             </div>

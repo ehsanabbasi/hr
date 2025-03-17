@@ -20,6 +20,8 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\OnboardingTaskController;
 use App\Http\Controllers\CareerOpportunityController;
 use App\Http\Controllers\CareerOpportunityCandidateController;
+use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\UserCertificateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,6 +160,18 @@ Route::middleware(['auth'])->group(function () {
         ->name('career-opportunities.candidates.destroy');
     Route::get('career-opportunities/{careerOpportunity}/candidates/{candidate}/resume', [CareerOpportunityCandidateController::class, 'downloadResume'])
         ->name('career-opportunities.candidates.resume');
+
+    // Certificate routes (Admin only)
+    Route::resource('certificates', CertificateController::class);
+
+    // User Certificates
+    Route::prefix('users/{user}/certificates')->name('users.certificates.')->group(function () {
+        Route::get('/', [UserCertificateController::class, 'index'])->name('index');
+        Route::get('/{certificate}', [UserCertificateController::class, 'show'])->name('show');
+        Route::post('/{certificate}/upload', [UserCertificateController::class, 'upload'])->name('upload');
+        Route::get('/{certificate}/download', [UserCertificateController::class, 'download'])->name('download');
+        Route::delete('/{certificate}', [UserCertificateController::class, 'destroy'])->name('destroy');
+    });
 });
 
 require __DIR__.'/auth.php';

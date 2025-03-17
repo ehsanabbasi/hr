@@ -146,4 +146,16 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function certificates()
+    {
+        return $this->belongsToMany(Certificate::class, 'user_certificates')
+            ->withPivot(['status', 'file_path', 'file_name', 'file_type', 'file_size', 'completed_at'])
+            ->withTimestamps();
+    }
+
+    public function userCertificates()
+    {
+        return $this->hasMany(UserCertificate::class);
+    }
+
 }

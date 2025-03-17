@@ -238,6 +238,26 @@ return [
             ],
         ],
         [
+            'label' => 'Certificates',
+            'icon' => 'fas fa-certificate',
+            'permission' => 'viewAny',
+            'policy' => 'App\Models\Certificate',
+            'submenu' => [
+                [
+                    'label' => 'All Certificates',
+                    'route' => 'certificates.index',
+                    'permission' => 'viewAny',
+                    'policy' => 'App\Models\Certificate',
+                ],
+                [
+                    'label' => 'Create Certificate',
+                    'route' => 'certificates.create',
+                    'permission' => 'create',
+                    'policy' => 'App\Models\Certificate',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',
