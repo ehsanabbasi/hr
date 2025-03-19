@@ -258,6 +258,28 @@ return [
             ],
         ],
         [
+            'label' => 'Role Management',
+            'icon' => 'fas fa-user-shield',
+            'permission' => 'view users',
+            'submenu' => [
+                [
+                    'label' => 'User Assignments',
+                    'route' => 'admin.role-permissions.index',
+                    'permission' => 'view users',
+                ],
+                [
+                    'label' => 'Manage Roles',
+                    'route' => 'admin.role-permissions.roles',
+                    'permission' => 'view users',
+                ],
+                [
+                    'label' => 'Manage Permissions',
+                    'route' => 'admin.role-permissions.permissions',
+                    'permission' => 'view users',
+                ],
+            ],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'settings',
             'icon' => 'fas fa-cog',

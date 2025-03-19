@@ -5,10 +5,11 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShareNavigationData
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $navigation = $this->getNavigationWithPermissions();
         View::share('sidebarNavigation', $navigation);
@@ -28,6 +29,11 @@ class ShareNavigationData
         $filteredNavigation = [];
         
         foreach ($navigation as $item) {
+            // Skip items that require permissions the user doesn't have
+            if (isset($item['permission']) && !$user->can($item['permission'])) {
+                continue;
+            }
+            
             // Handle submenu items
             if (isset($item['submenu'])) {
                 $filteredSubmenu = [];
@@ -53,12 +59,7 @@ class ShareNavigationData
                     $filteredNavigation[] = $item;
                 }
             } else {
-                // Handle regular menu items
-                // Check permissions if defined
-                if (isset($item['permission']) && !$user->can($item['permission'])) {
-                    continue;
-                }
-                
+                // Regular menu item with no submenu
                 $filteredNavigation[] = $item;
             }
         }

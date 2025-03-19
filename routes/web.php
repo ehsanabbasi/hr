@@ -24,6 +24,8 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\UserCertificateController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +43,7 @@ Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/settings', function() {
-        return view('settings');
-    })->name('settings');
+    
     // User Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -182,8 +182,31 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
     Route::post('/notifications/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
-    Route::post('/language', [LanguageController::class, 'switch'])->name('language.switch');
+    // Language switch
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/language', [SettingsController::class, 'saveLanguage'])->name('language.switch');
 });
 
+// Role and Permission management routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // User roles and permissions management
+    Route::get('/role-permissions', [RolePermissionController::class, 'index'])->name('role-permissions.index');
+    Route::get('/role-permissions/{user}/edit', [RolePermissionController::class, 'edit'])->name('role-permissions.edit');
+    Route::put('/role-permissions/{user}', [RolePermissionController::class, 'update'])->name('role-permissions.update');
+    
+    // Role management
+    Route::get('/roles', [RolePermissionController::class, 'roles'])->name('role-permissions.roles');
+    Route::post('/roles', [RolePermissionController::class, 'storeRole'])->name('role-permissions.store-role');
+    Route::get('/roles/{role}/edit', [RolePermissionController::class, 'editRole'])->name('role-permissions.edit-role');
+    Route::put('/roles/{role}', [RolePermissionController::class, 'updateRole'])->name('role-permissions.update-role');
+    Route::delete('/roles/{role}', [RolePermissionController::class, 'deleteRole'])->name('role-permissions.delete-role');
+    
+    // Permission management
+    Route::get('/permissions', [RolePermissionController::class, 'permissions'])->name('role-permissions.permissions');
+    Route::post('/permissions', [RolePermissionController::class, 'storePermission'])->name('role-permissions.store-permission');
+    Route::get('/permissions/{permission}/edit', [RolePermissionController::class, 'editPermission'])->name('role-permissions.edit-permission');
+    Route::put('/permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('role-permissions.update-permission');
+    Route::delete('/permissions/{permission}', [RolePermissionController::class, 'deletePermission'])->name('role-permissions.delete-permission');
+});
 
 require __DIR__.'/auth.php';
