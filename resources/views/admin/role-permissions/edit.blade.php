@@ -71,30 +71,4 @@
             </form>
         </div>
     </div>
-
-    <!-- Create Permission Modal -->
-    <div class="modal fade" id="createPermissionModal" tabindex="-1" aria-labelledby="createPermissionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createPermissionModalLabel">Create New Permission</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('admin.role-permissions.store-permission') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Permission Name</label>
-                            <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" id="name" name="name" required>
-                            <p class="mt-1 text-sm text-gray-500">Use a descriptive name like "view users" or "edit departments"</p>
-                        </div>
-                        <div class="mt-4 flex justify-end">
-                            <button type="button" class="mr-2 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create Permission</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </x-dashboard-layout> 

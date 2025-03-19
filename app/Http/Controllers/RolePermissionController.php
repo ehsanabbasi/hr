@@ -68,12 +68,25 @@ class RolePermissionController extends Controller
     }
     
     // Role management
-    public function roles()
+    public function roles(Request $request)
     {
-        $roles = Role::with('permissions')->get();
+        $search = $request->input('search');
+        $query = Role::with('permissions');
+        
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+        
+        $roles = $query->paginate(10)->withQueryString();
         $permissions = Permission::all();
         
         return view('admin.role-permissions.roles', compact('roles', 'permissions'));
+    }
+    
+    public function createRole()
+    {
+        $permissions = Permission::all();
+        return view('admin.role-permissions.create-role', compact('permissions'));
     }
     
     public function storeRole(Request $request)
@@ -135,11 +148,23 @@ class RolePermissionController extends Controller
     }
     
     // Permission management
-    public function permissions()
+    public function permissions(Request $request)
     {
-        $permissions = Permission::paginate(20);
+        $search = $request->input('search');
+        $query = Permission::with('roles');
+        
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+        
+        $permissions = $query->paginate(10)->withQueryString();
         
         return view('admin.role-permissions.permissions', compact('permissions'));
+    }
+    
+    public function createPermission()
+    {
+        return view('admin.role-permissions.create-permission');
     }
     
     public function storePermission(Request $request)

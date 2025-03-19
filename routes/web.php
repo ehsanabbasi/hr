@@ -197,6 +197,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Role management
     Route::get('/roles', [RolePermissionController::class, 'roles'])->name('role-permissions.roles');
     Route::post('/roles', [RolePermissionController::class, 'storeRole'])->name('role-permissions.store-role');
+    Route::get('/roles/create', [RolePermissionController::class, 'createRole'])->name('role-permissions.create-role');
     Route::get('/roles/{role}/edit', [RolePermissionController::class, 'editRole'])->name('role-permissions.edit-role');
     Route::put('/roles/{role}', [RolePermissionController::class, 'updateRole'])->name('role-permissions.update-role');
     Route::delete('/roles/{role}', [RolePermissionController::class, 'deleteRole'])->name('role-permissions.delete-role');
@@ -204,9 +205,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Permission management
     Route::get('/permissions', [RolePermissionController::class, 'permissions'])->name('role-permissions.permissions');
     Route::post('/permissions', [RolePermissionController::class, 'storePermission'])->name('role-permissions.store-permission');
+    Route::get('/permissions/create', [RolePermissionController::class, 'createPermission'])->name('role-permissions.create-permission');
     Route::get('/permissions/{permission}/edit', [RolePermissionController::class, 'editPermission'])->name('role-permissions.edit-permission');
     Route::put('/permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('role-permissions.update-permission');
     Route::delete('/permissions/{permission}', [RolePermissionController::class, 'deletePermission'])->name('role-permissions.delete-permission');
+
+    
+
 });
 
 require __DIR__.'/auth.php';
