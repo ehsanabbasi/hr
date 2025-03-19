@@ -32,5 +32,6 @@ class Kernel extends HttpKernel
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'check.mandatory.polls' => \App\Http\Middleware\CheckMandatoryPolls::class,
         'check.mandatory.surveys' => \App\Http\Middleware\CheckMandatorySurveys::class,
+        'locale' => \App\Http\Middleware\SetLocale::class,
     ];
 }

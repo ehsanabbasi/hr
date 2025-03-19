@@ -86,6 +86,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Application Locales
+    |--------------------------------------------------------------------------
+    |
+    | This value determines which locales are available for selection in the
+    | language settings. Add more locales as you add translation files.
+    |
+    */
+
+    'available_locales' => [
+        'en',
+        'fr',
+        'de',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

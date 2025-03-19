@@ -168,4 +168,46 @@ class User extends Authenticatable
         return $this->notifications()->whereNull('read_at');
     }
 
+    /**
+     * Set a user setting value
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setSetting($key, $value)
+    {
+        $setting = $this->settings()->where('key', $key)->first();
+        
+        if ($setting) {
+            $setting->update(['value' => $value]);
+        } else {
+            $this->settings()->create([
+                'key' => $key,
+                'value' => $value,
+            ]);
+        }
+    }
+
+    /**
+     * Get a user setting value
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getSetting($key, $default = null)
+    {
+        $setting = $this->settings()->where('key', $key)->first();
+        return $setting ? $setting->value : $default;
+    }
+
+    /**
+     * Get all user settings
+     */
+    public function settings()
+    {
+        return $this->hasMany(UserSetting::class);
+    }
+
 }
