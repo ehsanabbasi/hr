@@ -12,10 +12,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with(['department', 'jobTitle'])->paginate(10);
-        return view('users.index', compact('users'));
+        $search = $request->input('search');
+        $departmentId = $request->input('department');
+        
+        $usersQuery = User::with(['department', 'jobTitle']);
+        
+        if ($search) {
+            $usersQuery->where(function($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($departmentId) {
+            $usersQuery->where('department_id', $departmentId);
+        }
+        
+    
+        $users = $usersQuery->paginate(10)->withQueryString();
+        
+        $departments = Department::orderBy('name')->get();
+        
+        return view('users.index', compact('users', 'departments', 'search', 'departmentId'));
     }
 
     /**

@@ -4,29 +4,64 @@ namespace App\Http\Controllers;
 
 use App\Models\FacilityNeed;
 use App\Models\FacilityNeedStatusHistory;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FacilityNeedController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        // Get search and filter parameters
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $priority = $request->input('priority');
         
-        // If user is HR or admin, show all needs
-        if ($user->hasRole(['hr', 'admin'])) {
-            $facilityNeeds = FacilityNeed::with('user')->latest()->paginate(10);
-        } else {
-            // Regular users only see their own needs
-            $facilityNeeds = FacilityNeed::where('user_id', $user->id)->latest()->paginate(10);
+        // Start query with relationships
+        $facilityNeedsQuery = FacilityNeed::with(['department', 'requestedBy']);
+        
+        // Apply search if provided
+        if ($search) {
+            $facilityNeedsQuery->where(function($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+            });
         }
         
-        return view('facility-needs.index', compact('facilityNeeds'));
+        // Apply status filter if provided
+        if ($status) {
+            $facilityNeedsQuery->where('status', $status);
+        }
+        
+        // Apply priority filter if provided
+        if ($priority) {
+            $facilityNeedsQuery->where('priority', $priority);
+        }
+        
+        /* // For non-admin users, show only their department's facility needs
+        if (!auth()->user()->can('manage_facility_needs')) {
+            $userDepartmentId = auth()->user()->department_id;
+            $facilityNeedsQuery->where(function($query) use ($userDepartmentId) {
+                $query->where('department_id', $userDepartmentId)
+                      ->orWhere('requested_by', auth()->id());
+            });
+        } */
+        
+        // Get paginated results
+        $facilityNeeds = $facilityNeedsQuery
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+        
+        return view('facility-needs.index', compact('facilityNeeds', 'search', 'status', 'priority'));
     }
 
     public function create()
     {
-        return view('facility-needs.create');
+        $departments = Department::orderBy('name')->get();
+        $priorities = ['low', 'medium', 'high', 'critical'];
+        
+        return view('facility-needs.create', compact('departments', 'priorities'));
     }
 
     public function store(Request $request)
@@ -34,25 +69,16 @@ class FacilityNeedController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high',
+            'department_id' => 'required|exists:departments,id',
+            'priority' => 'required|in:low,medium,high,critical',
+            'estimated_cost' => 'nullable|numeric|min:0',
+            'desired_completion_date' => 'nullable|date|after_or_equal:today',
         ]);
 
-        $facilityNeed = FacilityNeed::create([
-            'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'pending',
-        ]);
-
-        // Create initial status history
-        FacilityNeedStatusHistory::create([
-            'facility_need_id' => $facilityNeed->id,
-            'user_id' => Auth::id(),
-            'old_status' => '',
-            'new_status' => 'pending',
-            'notes' => 'Initial request created',
-        ]);
+        $validated['requested_by'] = Auth::id();
+        $validated['status'] = 'pending';
+        
+        FacilityNeed::create($validated);
 
         return redirect()->route('facility-needs.index')
             ->with('success', 'Facility need request submitted successfully.');
@@ -62,16 +88,18 @@ class FacilityNeedController extends Controller
     {
         $this->authorize('view', $facilityNeed);
         
-        $statusHistory = $facilityNeed->statusHistory;
-        
-        return view('facility-needs.show', compact('facilityNeed', 'statusHistory'));
+        $facilityNeed->load(['department', 'requestedBy', 'approvedBy']);
+        return view('facility-needs.show', compact('facilityNeed'));
     }
 
     public function edit(FacilityNeed $facilityNeed)
     {
         $this->authorize('update', $facilityNeed);
         
-        return view('facility-needs.edit', compact('facilityNeed'));
+        $departments = Department::orderBy('name')->get();
+        $priorities = ['low', 'medium', 'high', 'critical'];
+        
+        return view('facility-needs.edit', compact('facilityNeed', 'departments', 'priorities'));
     }
 
     public function update(Request $request, FacilityNeed $facilityNeed)
@@ -81,7 +109,10 @@ class FacilityNeedController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'priority' => 'required|in:low,medium,high',
+            'department_id' => 'required|exists:departments,id',
+            'priority' => 'required|in:low,medium,high,critical',
+            'estimated_cost' => 'nullable|numeric|min:0',
+            'desired_completion_date' => 'nullable|date',
         ]);
 
         $facilityNeed->update($validated);
@@ -123,6 +154,59 @@ class FacilityNeedController extends Controller
 
         return redirect()->route('facility-needs.show', $facilityNeed)
             ->with('success', 'Status updated successfully.');
+    }
+
+    public function approve(FacilityNeed $facilityNeed)
+    {
+        $this->authorize('manage', FacilityNeed::class);
+        
+        if ($facilityNeed->status !== 'pending') {
+            return redirect()->route('facility-needs.index')
+                ->with('error', 'Only pending facility needs can be approved.');
+        }
+        
+        $facilityNeed->status = 'approved';
+        $facilityNeed->approved_by = Auth::id();
+        $facilityNeed->approval_date = now();
+        $facilityNeed->save();
+        
+        return redirect()->route('facility-needs.index')
+            ->with('success', 'Facility need approved successfully.');
+    }
+    
+    public function deny(FacilityNeed $facilityNeed)
+    {
+        $this->authorize('manage', FacilityNeed::class);
+        
+        if ($facilityNeed->status !== 'pending') {
+            return redirect()->route('facility-needs.index')
+                ->with('error', 'Only pending facility needs can be denied.');
+        }
+        
+        $facilityNeed->status = 'denied';
+        $facilityNeed->approved_by = Auth::id();
+        $facilityNeed->approval_date = now();
+        $facilityNeed->save();
+        
+        return redirect()->route('facility-needs.index')
+            ->with('success', 'Facility need denied successfully.');
+    }
+    
+    public function complete(FacilityNeed $facilityNeed)
+    {
+        $this->authorize('manage', FacilityNeed::class);
+        
+        if ($facilityNeed->status !== 'approved') {
+            return redirect()->route('facility-needs.index')
+                ->with('error', 'Only approved facility needs can be marked as completed.');
+        }
+        
+        $facilityNeed->status = 'completed';
+        $facilityNeed->completion_date = now();
+        $facilityNeed->save();
+        
+        return redirect()->route('facility-needs.index')
+            ->with('success', 'Facility need marked as completed successfully.');
     }
 
     public function destroy(FacilityNeed $facilityNeed)

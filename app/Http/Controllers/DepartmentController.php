@@ -11,10 +11,24 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $departments = Department::with('head')->paginate(10);
-        return view('departments.index', compact('departments'));
+        // Get search parameter
+        $search = $request->input('search');
+        
+        // Start query with manager relationship and user count
+        $departmentsQuery = Department::with('head')
+            ->withCount('users');
+        
+        // Apply search if provided
+        if ($search) {
+            $departmentsQuery->where('name', 'like', "%{$search}%");
+        }
+        
+        // Get paginated results
+        $departments = $departmentsQuery->paginate(10)->withQueryString();
+        
+        return view('departments.index', compact('departments', 'search'));
     }
 
     /**

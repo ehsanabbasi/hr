@@ -8,13 +8,24 @@ use Illuminate\Http\Request;
 
 class JobTitleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $jobTitles = JobTitle::with('department')->paginate(10);
-        return view('job-titles.index', compact('jobTitles'));
+        // Get search parameter
+        $search = $request->input('search');
+        
+        // Start query with department relationship and user count
+        $jobTitlesQuery = JobTitle::with('department')
+            ->withCount('users');
+        
+        // Apply search if provided
+        if ($search) {
+            $jobTitlesQuery->where('name', 'like', "%{$search}%");
+        }
+        
+        // Get paginated results
+        $jobTitles = $jobTitlesQuery->paginate(10)->withQueryString();
+        
+        return view('job-titles.index', compact('jobTitles', 'search'));
     }
 
     /**

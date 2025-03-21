@@ -32,7 +32,7 @@
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <!-- Search Form -->
                     <div class="flex-grow">
-                        <form action="{{ route('users.index') }}" method="GET" class="flex items-end gap-4">
+                        <form action="{{ route('users.index') }}" method="GET" class="flex flex-col md:flex-row md:items-end gap-4">
                             <div class="flex-grow">
                                 <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
                                     Search Users
@@ -46,7 +46,7 @@
                                     <input type="text" name="search" id="search" 
                                            class="block w-full h-10 pl-10 pr-3 py-2 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
                                            placeholder="Search by name or email" 
-                                           value="{{ request('search') }}">
+                                           value="{{ $search ?? '' }}">
                                 </div>
                             </div>
                             
@@ -58,8 +58,8 @@
                                     <select id="department" name="department" 
                                             class="block w-full h-10 pl-3 pr-10 py-2 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none">
                                         <option value="">All Departments</option>
-                                        @foreach($departments ?? [] as $department)
-                                            <option value="{{ $department->id }}" {{ request('department') == $department->id ? 'selected' : '' }}>
+                                        @foreach($departments as $department)
+                                            <option value="{{ $department->id }}" {{ isset($departmentId) && $departmentId == $department->id ? 'selected' : '' }}>
                                                 {{ $department->name }}
                                             </option>
                                         @endforeach
@@ -77,7 +77,7 @@
                                     Search
                                 </button>
                                 
-                                @if(request('search') || request('department'))
+                                @if(!empty($search) || !empty($departmentId))
                                     <a href="{{ route('users.index') }}" class="h-10 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         Clear
                                     </a>

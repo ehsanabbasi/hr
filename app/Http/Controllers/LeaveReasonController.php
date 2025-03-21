@@ -10,10 +10,33 @@ class LeaveReasonController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $leaveReasons = LeaveReason::paginate(10);
-        return view('leave-reasons.index', compact('leaveReasons'));
+        // Get search and filter parameters
+        $search = $request->input('search');
+        $status = $request->input('status');
+        
+        // Start query
+        $leaveReasonsQuery = LeaveReason::query();
+        
+        // Apply search if provided
+        if ($search) {
+            $leaveReasonsQuery->where('name', 'like', "%{$search}%")
+                              ->orWhere('description', 'like', "%{$search}%");
+        }
+        
+        // Apply status filter if provided
+        if ($status !== null && $status !== '') {
+            $leaveReasonsQuery->where('active', $status);
+        }
+        
+        // Get paginated results
+        $leaveReasons = $leaveReasonsQuery
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+        
+        return view('leave-reasons.index', compact('leaveReasons', 'search', 'status'));
     }
 
     /**
@@ -71,15 +94,13 @@ class LeaveReasonController extends Controller
      */
     public function destroy(LeaveReason $leaveReason)
     {
-        // Check if the leave reason is being used
-        if ($leaveReason->leaveRequests()->exists()) {
+        try {
+            $leaveReason->delete();
             return redirect()->route('leave-reasons.index')
-                ->with('error', 'Cannot delete leave reason as it is being used by leave requests.');
+                ->with('success', 'Leave reason deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('leave-reasons.index')
+                ->with('error', 'Unable to delete this leave reason. It may be in use.');
         }
-
-        $leaveReason->delete();
-
-        return redirect()->route('leave-reasons.index')
-            ->with('success', 'Leave reason deleted successfully.');
     }
 }
