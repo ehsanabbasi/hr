@@ -40,7 +40,7 @@ class WorkingHourController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        $this->validateWorkingHours($validated);
+        $validated = $this->validateWorkingHours($validated);
 
         $workingHour = WorkingHour::create($validated);
 
@@ -69,7 +69,7 @@ class WorkingHourController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        $this->validateWorkingHours($validated);
+        $validated = $this->validateWorkingHours($validated);
 
         $workingHour->update($validated);
 
@@ -120,6 +120,9 @@ class WorkingHourController extends Controller
             $breakHours = $breakEndTime->diffInHours($breakStartTime);
         }
 
+        // Net working hours (total - break)
+        $netHours = $totalHours - $breakHours;
+
         // Check daily hours
         if ($totalHours > $companyLaw->max_daily_hours) {
             throw ValidationException::withMessages([
@@ -134,30 +137,68 @@ class WorkingHourController extends Controller
             ]);
         }
 
-        // Check weekly hours
-        $startOfWeek = $date->startOfWeek();
-        $endOfWeek = $date->endOfWeek();
-        $weeklyHours = WorkingHour::where('user_id', $user->id)
+        // Calculate weekly hours manually instead of using sum
+        $startOfWeek = $date->copy()->startOfWeek();
+        $endOfWeek = $date->copy()->endOfWeek();
+        $weeklyEntries = WorkingHour::where('user_id', $user->id)
             ->whereBetween('date', [$startOfWeek, $endOfWeek])
-            ->sum('total_hours');
-
-        if ($weeklyHours + $totalHours > $companyLaw->max_weekly_hours) {
+            ->get();
+        
+        $weeklyHours = $weeklyEntries->sum(function($entry) {
+            $startTime = Carbon::parse($entry->start_time);
+            $endTime = Carbon::parse($entry->end_time);
+            $totalHours = $endTime->diffInHours($startTime);
+            
+            $breakHours = 0;
+            if ($entry->break_start_time && $entry->break_end_time) {
+                $breakStartTime = Carbon::parse($entry->break_start_time);
+                $breakEndTime = Carbon::parse($entry->break_end_time);
+                $breakHours = $breakEndTime->diffInHours($breakStartTime);
+            }
+            
+            return $totalHours - $breakHours;
+        });
+        
+        if ($weeklyHours + $netHours > $companyLaw->max_weekly_hours) {
             throw ValidationException::withMessages([
                 'end_time' => 'Total working hours for the week exceed the maximum allowed weekly hours.',
             ]);
         }
 
-        // Check monthly hours
-        $startOfMonth = $date->startOfMonth();
-        $endOfMonth = $date->endOfMonth();
-        $monthlyHours = WorkingHour::where('user_id', $user->id)
+        // Similarly, calculate monthly hours manually
+        $startOfMonth = $date->copy()->startOfMonth();
+        $endOfMonth = $date->copy()->endOfMonth();
+        $monthlyEntries = WorkingHour::where('user_id', $user->id)
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->sum('total_hours');
-
-        if ($monthlyHours + $totalHours > $companyLaw->max_monthly_hours) {
+            ->get();
+        
+        $monthlyHours = $monthlyEntries->sum(function($entry) {
+            $startTime = Carbon::parse($entry->start_time);
+            $endTime = Carbon::parse($entry->end_time);
+            $totalHours = $endTime->diffInHours($startTime);
+            
+            $breakHours = 0;
+            if ($entry->break_start_time && $entry->break_end_time) {
+                $breakStartTime = Carbon::parse($entry->break_start_time);
+                $breakEndTime = Carbon::parse($entry->break_end_time);
+                $breakHours = $breakEndTime->diffInHours($breakStartTime);
+            }
+            
+            return $totalHours - $breakHours;
+        });
+        
+        if ($monthlyHours + $netHours > $companyLaw->max_monthly_hours) {
             throw ValidationException::withMessages([
                 'end_time' => 'Total working hours for the month exceed the maximum allowed monthly hours.',
             ]);
         }
+
+        // Calculate day of week
+        $dayOfWeek = Carbon::parse($data['date'])->format('l'); // Returns the full day name (Monday, Tuesday, etc.)
+
+        return array_merge($data, [
+            'total_hours' => $netHours,
+            'day_of_week' => strtolower($dayOfWeek) // Store in lowercase to match your view's ucfirst()
+        ]);
     }
 } 

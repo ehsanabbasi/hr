@@ -58,10 +58,11 @@
                                     <select id="status" name="status" 
                                             class="block w-full h-10 pl-3 pr-10 py-2 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none">
                                         <option value="">All Statuses</option>
-                                        <option value="pending" {{ (isset($status) && $status == 'pending') || request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ (isset($status) && $status == 'approved') || request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="denied" {{ (isset($status) && $status == 'denied') || request('status') == 'denied' ? 'selected' : '' }}>Denied</option>
-                                        <option value="completed" {{ (isset($status) && $status == 'completed') || request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        @foreach($statusOptions as $value => $label)
+                                            <option value="{{ $value }}" {{ (isset($status) && $status == $value) || request('status') == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -79,10 +80,11 @@
                                     <select id="priority" name="priority" 
                                             class="block w-full h-10 pl-3 pr-10 py-2 border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none">
                                         <option value="">All Priorities</option>
-                                        <option value="low" {{ (isset($priority) && $priority == 'low') || request('priority') == 'low' ? 'selected' : '' }}>Low</option>
-                                        <option value="medium" {{ (isset($priority) && $priority == 'medium') || request('priority') == 'medium' ? 'selected' : '' }}>Medium</option>
-                                        <option value="high" {{ (isset($priority) && $priority == 'high') || request('priority') == 'high' ? 'selected' : '' }}>High</option>
-                                        <option value="critical" {{ (isset($priority) && $priority == 'critical') || request('priority') == 'critical' ? 'selected' : '' }}>Critical</option>
+                                        @foreach($priorityOptions as $value => $label)
+                                            <option value="{{ $value }}" {{ (isset($priority) && $priority == $value) || request('priority') == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -134,23 +136,15 @@
                                         {{ $need->department->name }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($need->priority == 'low') bg-green-100 text-green-800 
-                                            @elseif($need->priority == 'medium') bg-blue-100 text-blue-800
-                                            @elseif($need->priority == 'high') bg-yellow-100 text-yellow-800
-                                            @else bg-red-100 text-red-800 @endif">
-                                        {{ ucfirst($need->priority) }}
-                                    </span>
-                                </td>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $getPriorityBadgeClasses($need->priority) }}">
+                                            {{ $priorityOptions[$need->priority] ?? ucfirst($need->priority) }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($need->status == 'pending') bg-yellow-100 text-yellow-800 
-                                            @elseif($need->status == 'approved') bg-blue-100 text-blue-800
-                                            @elseif($need->status == 'completed') bg-green-100 text-green-800
-                                            @else bg-red-100 text-red-800 @endif">
-                                            {{ ucfirst($need->status) }}
-                                    </span>
-                                </td>
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $getStatusBadgeClasses($need->status) }}">
+                                            {{ $statusOptions[$need->status] ?? ucfirst($need->status) }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $need->requestedBy->name }}
                                     </td>

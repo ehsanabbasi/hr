@@ -108,12 +108,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Working Hours
-    Route::get('/working-hours', [WorkingHourController::class, 'index'])->name('working-hours.index');
-    Route::get('/working-hours/create', [WorkingHourController::class, 'create'])->name('working-hours.create');
-    Route::post('/working-hours', [WorkingHourController::class, 'store'])->name('working-hours.store');
-    Route::get('/working-hours/{workingHour}/edit', [WorkingHourController::class, 'edit'])->name('working-hours.edit');
-    Route::put('/working-hours/{workingHour}', [WorkingHourController::class, 'update'])->name('working-hours.update');
+    Route::resource('working-hours', WorkingHourController::class);
     Route::get('/working-hours/monthly', [WorkingHourController::class, 'showMonthly'])->name('working-hours.monthly');
+    
 
     // Company Law Settings (admin only)
     Route::get('/company-laws', [CompanyLawController::class, 'index'])->name('company-laws.index');
