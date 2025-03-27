@@ -123,6 +123,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Company Domain for Invitations
+    |--------------------------------------------------------------------------
+    |
+    | This value specifies the required email domain for user registrations,
+    | especially for those invited to the platform.
+    |
+    */
+
+    'company_domain' => env('COMPANY_DOMAIN', null),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |

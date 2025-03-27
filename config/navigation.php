@@ -22,6 +22,12 @@ return [
                     'route' => 'users.create',
                     'permission' => 'create users',
                 ],
+                [
+                    'label' => 'Invite User',
+                    'route' => 'admin.invitations.create',
+                    'icon' => 'fas fa-user-plus',
+                    'permission' => 'create users',
+                ],
             ],
         ],
         [

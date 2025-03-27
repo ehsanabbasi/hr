@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
     # PHP-FPM Application Service
     app:
@@ -7,6 +5,7 @@ services:
         container_name: laravel_app
         restart: unless-stopped
         working_dir: /var/www
+        user: "www-data"
         volumes:
             - .:/var/www
         networks:
@@ -62,10 +61,11 @@ services:
         image: node:20
         container_name: laravel_node
         restart: unless-stopped
+        user: "1000:1000"
         working_dir: /var/www
         volumes:
-            - .:/var/www
-        command: sh -c "npm install && npx vite --host"
+            - .:/var/www:z
+        command: sh -c "mkdir -p /home/node/.npm && chown -R 1000:1000 /home/node/.npm && npm install && npx vite --host"
         ports:
           - "5173:5173" 
         networks:

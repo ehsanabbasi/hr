@@ -26,6 +26,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\InvitationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,10 @@ Route::get('/', function () {
 
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
+
+// Invitation registration routes (guest access)
+Route::get('register/invite/{token}', [InvitationController::class, 'showRegistrationForm'])->name('invitation.register');
+Route::post('register/invite', [InvitationController::class, 'registerInvitedUser'])->name('invitation.register.store');
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
@@ -211,8 +216,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('role-permissions.update-permission');
     Route::delete('/permissions/{permission}', [RolePermissionController::class, 'deletePermission'])->name('role-permissions.delete-permission');
 
-    
-
+    // Invitation routes (Admin only)
+    Route::get('/invitations/create', [InvitationController::class, 'create'])->name('invitations.create');
+    Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
 });
 
 require __DIR__.'/auth.php';
