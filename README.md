@@ -1,66 +1,283 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HR Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Human Resources management system built with Laravel, designed to streamline HR operations, employee management, and organizational processes.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### User & Role Management
+- Role-based access control with customizable permissions
+- User profile management
+- Department and job title organization
+- Social authentication support
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Leave Management
+- Leave request creation and tracking
+- Multi-level approval workflow
+- Department head approval system
+- Leave history and statistics
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Document Management
+- Document type configuration
+- Secure document storage and management
+- Permission-based document access
+- Document version control
 
-## Learning Laravel
+### Working Hours & Time Tracking
+- Working hours logging
+- Monthly hour requirements based on company policy
+- Time tracking analytics and reporting
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Onboarding & Training
+- Employee onboarding task management
+- Certificate management and tracking
+- Mandatory training assignment and verification
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Feedback & Communication
+- Employee feedback system
+- Department-based communication channels
+- Facility needs request and tracking
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Surveys & Polls
+- Create and distribute surveys
+- Collect and analyze poll responses
+- Mandatory participation tracking
 
-## Laravel Sponsors
+### Career Development
+- Job opportunity postings
+- Career advancement tracking
+- Application management
+- Internal job market
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Notifications & Dashboards
+- Real-time notification system
+- Customizable user dashboard
+- Important dates tracking (birthdays, anniversaries)
+- Task and requirement reminders
 
-### Premium Partners
+## Technology Stack
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **Backend**: Laravel 12
+- **Frontend**: TailwindCSS, Alpine.js
+- **Database**: MySQL/PostgreSQL
+- **Authentication**: Laravel Breeze, Socialite
+- **Authorization**: Spatie Permission
+- **UI Components**: Custom Tailwind components
+- **Containerization**: Docker & Docker Compose
+
+## System Requirements
+
+### Standard Installation
+- PHP 8.2 or higher
+- Composer
+- Node.js & NPM
+- MySQL 8.0+ or PostgreSQL 13+
+- Web server (Nginx or Apache)
+
+### Docker Installation
+- Docker Engine 20.10+
+- Docker Compose v2+
+
+## Installation
+
+You can set up this project using either the standard method or Docker.
+
+### Option 1: Docker Setup (Recommended)
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/hr-management-system.git
+   cd hr-management-system
+   ```
+
+2. Configure environment
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Update the `.env` file with the following database settings:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=hr_management
+   DB_USERNAME=hr_user
+   DB_PASSWORD=your_password
+   ```
+
+4. Start the Docker containers
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Generate application key and run migrations
+   ```bash
+   docker-compose exec app php artisan key:generate
+   docker-compose exec app php artisan migrate --seed
+   ```
+
+6. Access the application at `http://localhost`
+
+7. For development with hot reloading:
+   - Frontend is served at `http://localhost:5173` by the node container
+   - Any changes to frontend files will be automatically reflected
+
+8. Useful Docker commands:
+   ```bash
+   # View container logs
+   docker-compose logs -f
+
+   # Stop containers
+   docker-compose down
+
+   # Rebuild containers after Dockerfile or docker-compose.yml changes
+   docker-compose up -d --build
+
+   # Run Artisan commands
+   docker-compose exec app php artisan [command]
+
+   # Run Composer commands
+   docker-compose exec app composer [command]
+
+   # Run npm commands
+   docker-compose exec node npm [command]
+   ```
+
+### Option 2: Standard Setup
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/hr-management-system.git
+   cd hr-management-system
+   ```
+
+2. Install PHP dependencies
+   ```bash
+   composer install
+   ```
+
+3. Install and compile frontend assets
+   ```bash
+   npm install
+   npm run build
+   ```
+
+4. Configure environment
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. Configure your database in the `.env` file
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=hr_management
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+6. Run migrations and seed the database
+   ```bash
+   php artisan migrate --seed
+   ```
+
+7. Start the development server
+   ```bash
+   php artisan serve
+   ```
+
+8. Access the application at `http://localhost:8000`
+
+## Default Users
+
+After seeding, the following test users are available:
+
+- **Admin**: admin@example.com (Password: password)
+- **HR Manager**: hr@example.com (Password: password)
+- **Department Head**: manager@example.com (Password: password)
+- **Employee**: employee@example.com (Password: password)
+
+## Architecture
+
+### Models
+
+The system includes the following key models:
+
+- **User**: Employee information and authentication
+- **Department**: Organizational structure
+- **JobTitle**: Employee positions
+- **LeaveRequest**: Time-off requests
+- **LeaveReason**: Categorization of absence types
+- **Document/UserDocument**: Document management
+- **WorkingHour**: Time tracking
+- **FacilityNeed**: Resource requests
+- **Poll/Survey**: Employee feedback mechanisms
+- **Certificate**: Training and qualification tracking
+- **CareerOpportunity**: Internal job postings
+- **Notification**: User alerts
+
+### Roles & Permissions
+
+The system implements a comprehensive role-based access control system using Spatie's Laravel-Permission package:
+
+- **Admin**: Complete system access
+- **HR**: User management, document control, company policies
+- **Department Head**: Team management, approval workflows
+- **Employee**: Self-service functionality
+- **User**: Basic access for non-employees (external applicants)
+
+Custom permissions can be assigned to users independent of their roles for flexible access control.
+
+### Routes & Controllers
+
+Routes are organized by functionality and protected by middleware for appropriate access control:
+
+- Admin routes (`/admin/*`) - Full system management
+- User self-service routes - Personal information, leave requests, etc.
+- Department head routes - Team management and approvals
+- HR specific routes - Policy management, document control
+
+### Views & UI
+
+The application utilizes:
+- Blade templates with component-based architecture
+- Responsive Tailwind CSS design
+- Alpine.js for interactive UI elements
+- Custom dashboard layouts for different user roles
+
+## Customization
+
+### Adding New Roles
+
+1. Use the admin interface to create new roles at `/admin/role-permissions/roles`
+2. Assign appropriate permissions to the role
+3. Assign the role to users as needed
+
+### Custom Permissions
+
+1. Create new permissions at `/admin/role-permissions/permissions`
+2. Assign the permissions to roles or directly to users
+3. Update controllers to check for the new permissions
+
+### Adding New Document Types
+
+Document types can be added through the admin interface at `/admin/document-types`
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For questions and support, please open an issue in the GitHub repository.
