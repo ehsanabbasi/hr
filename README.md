@@ -1,4 +1,4 @@
-# HR Management System
+# HR Management System (WORK IN PROGRESS)
 
 A comprehensive Human Resources management system built with Laravel, designed to streamline HR operations, employee management, and organizational processes.
 
